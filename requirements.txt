@@ -1,0 +1,4 @@
+yfinance>=0.2.36
+pykrx>=1.0.45
+requests>=2.31.0
+pytz>=2024.1

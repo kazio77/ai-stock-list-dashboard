@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 종목 분석 대시보드</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <style>
+    :root {
+      --bg-primary: #0c1120;
+      --bg-secondary: #131b2e;
+      --bg-card: #1a2340;
+      --bg-card-hover: #1f2b4d;
+      --border: #2a3556;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 24px 0 16px;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header .subtitle {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    /* Summary bar */
+    .summary {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 12px 0;
+      scrollbar-width: none;
+    }
+    .summary::-webkit-scrollbar { display: none; }
+    .summary-item {
+      flex-shrink: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      min-width: 120px;
+      text-align: center;
+    }
+    .summary-item .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .summary-item .value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin: 16px 0;
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      padding: 4px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      border: none;
+      background: none;
+    }
+    .tab.active {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* Sort */
+    .sort-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 8px 0;
+      scrollbar-width: none;
+    }
+    .sort-bar::-webkit-scrollbar { display: none; }
+    .sort-btn {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .sort-btn.active {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+
+    /* Cards */
+    .cards { display: flex; flex-direction: column; gap: 10px; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+    .card:hover { border-color: var(--blue); }
+
+    .card-main {
+      padding: 14px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .card-info { flex: 1; min-width: 0; }
+    .card-ticker {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .card-name {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-category {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      background: var(--bg-secondary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 2px;
+    }
+
+    .card-price {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .card-price .price {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .card-price .change {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .change.up { color: var(--green); }
+    .change.down { color: var(--red); }
+    .change.flat { color: var(--text-muted); }
+
+    /* Scores inline */
+    .card-scores {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .score-badge {
+      text-align: center;
+      min-width: 36px;
+    }
+    .score-badge .score-label {
+      font-size: 0.55rem;
+      color: var(--text-muted);
+      display: block;
+    }
+    .score-badge .score-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--bg-secondary);
+      margin-top: 3px;
+      overflow: hidden;
+    }
+    .score-badge .score-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+    .score-badge .score-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 1px;
+      display: block;
+    }
+
+    /* Detail panel */
+    .card-detail {
+      display: none;
+      padding: 0 16px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .card-detail.open { display: block; }
+
+    .detail-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 12px 0;
+    }
+    .detail-section {
+      margin-top: 12px;
+    }
+    .detail-section h4 {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .detail-list {
+      list-style: none;
+      padding: 0;
+    }
+    .detail-list li {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      padding: 3px 0;
+      padding-left: 14px;
+      position: relative;
+    }
+    .detail-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .detail-list.pros li::before { background: var(--green); }
+    .detail-list.cons li::before { background: var(--red); }
+    .detail-list.risk li::before { background: var(--yellow); }
+
+    .detail-meta {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .detail-meta span {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Score detail bars */
+    .score-detail-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
+    }
+    .score-detail-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      width: 50px;
+    }
+    .score-detail-bar {
+      flex: 1;
+      height: 8px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+      max-width: 120px;
+    }
+    .score-detail-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+    .score-detail-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      width: 20px;
+    }
+
+    /* Investment summary */
+    .invest-summary {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+    .invest-summary h3 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      color: var(--blue);
+    }
+    .invest-summary p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    /* Disclaimer */
+    .disclaimer {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 10px;
+      padding: 14px;
+      margin: 16px 0 32px;
+      text-align: center;
+    }
+    .disclaimer p {
+      font-size: 0.75rem;
+      color: var(--red);
+      line-height: 1.5;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .loading .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container { padding: 10px; }
+      .header h1 { font-size: 1.25rem; }
+      .card-main { gap: 10px; padding: 12px; }
+      .card-scores { gap: 4px; }
+      .score-badge { min-width: 30px; }
+      .card-ticker { font-size: 0.9rem; }
+      .card-price .price { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>AI 종목 분석 대시보드</h1>
+      <div class="subtitle" id="updateTime">데이터 로딩 중...</div>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="tabs">
+      <button class="tab active" data-market="overseas">🇺🇸 해외 종목</button>
+      <button class="tab" data-market="domestic">🇰🇷 국내 종목</button>
+    </div>
+
+    <div class="sort-bar" id="sortBar">
+      <button class="sort-btn active" data-sort="default">기본</button>
+      <button class="sort-btn" data-sort="long">장기점수순</button>
+      <button class="sort-btn" data-sort="short">단기점수순</button>
+      <button class="sort-btn" data-sort="risk">리스크 낮은순</button>
+      <button class="sort-btn" data-sort="change">등락률순</button>
+    </div>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <div>주가 데이터를 불러오는 중...</div>
+    </div>
+
+    <div class="cards" id="cards"></div>
+
+    <div class="invest-summary" id="investSummary" style="display:none">
+      <h3>📈 투자 관점 요약</h3>
+      <div id="investContent"></div>
+    </div>
+
+    <div class="disclaimer">
+      <p>⚠️ 본 대시보드의 정보는 투자 참고용이며, 투자 추천이나 권유가 아닙니다.<br>
+      투자 판단은 본인의 책임 하에 이루어져야 하며, 투자 전 반드시 전문가와 상담하시기 바랍니다.</p>
+    </div>
+  </div>
+
+  <script>
+    let allStocks = [];
+    let currentMarket = 'overseas';
+    let currentSort = 'default';
+
+    function getScoreColor(score) {
+      if (score <= 2) return 'var(--red)';
+      if (score === 3) return 'var(--yellow)';
+      return 'var(--green)';
+    }
+
+    function formatPrice(price, market) {
+      if (market === 'overseas') return `$${price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      return `₩${price.toLocaleString('ko-KR')}`;
+    }
+
+    function formatChange(pct) {
+      const arrow = pct >= 0 ? '▲' : '▼';
+      return `${arrow}${Math.abs(pct).toFixed(2)}%`;
+    }
+
+    function getChangeClass(pct) {
+      if (pct > 0) return 'up';
+      if (pct < 0) return 'down';
+      return 'flat';
+    }
+
+    function renderSummary(stocks) {
+      const overseas = stocks.filter(s => s.market === 'overseas');
+      const domestic = stocks.filter(s => s.market === 'domestic');
+      const all = stocks;
+
+      const avgShort = (all.reduce((a, s) => a + s.scores.short, 0) / all.length).toFixed(1);
+      const avgMid = (all.reduce((a, s) => a + s.scores.mid, 0) / all.length).toFixed(1);
+      const avgLong = (all.reduce((a, s) => a + s.scores.long, 0) / all.length).toFixed(1);
+      const avgRisk = (all.reduce((a, s) => a + s.risk_score, 0) / all.length).toFixed(1);
+
+      document.getElementById('summary').innerHTML = `
+        <div class="summary-item">
+          <div class="label">총 종목</div>
+          <div class="value" style="color:var(--blue)">${all.length}</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">평균 단기</div>
+          <div class="value" style="color:${getScoreColor(Math.round(avgShort))}">${avgShort}</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">평균 중기</div>
+          <div class="value" style="color:${getScoreColor(Math.round(avgMid))}">${avgMid}</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">평균 장기</div>
+          <div class="value" style="color:${getScoreColor(Math.round(avgLong))}">${avgLong}</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">평균 리스크</div>
+          <div class="value" style="color:${getScoreColor(Math.round(avgRisk))}">${avgRisk}</div>
+        </div>
+      `;
+    }
+
+    function renderScoreBar(label, value) {
+      const pct = (value / 5) * 100;
+      const color = getScoreColor(value);
+      return `
+        <div class="score-badge">
+          <span class="score-label">${label}</span>
+          <div class="score-bar"><div class="score-fill" style="width:${pct}%;background:${color}"></div></div>
+          <span class="score-val" style="color:${color}">${value}</span>
+        </div>`;
+    }
+
+    function renderDetailScore(label, value) {
+      const pct = (value / 5) * 100;
+      const color = getScoreColor(value);
+      return `
+        <div class="score-detail-row">
+          <span class="score-detail-label">${label}</span>
+          <div class="score-detail-bar"><div class="score-detail-fill" style="width:${pct}%;background:${color}"></div></div>
+          <span class="score-detail-value" style="color:${color}">${value}</span>
+        </div>`;
+    }
+
+    function renderCard(stock, idx) {
+      const priceStr = stock.price ? formatPrice(stock.price, stock.market) : 'N/A';
+      const changeStr = stock.change_pct !== undefined ? formatChange(stock.change_pct) : '-';
+      const changeClass = getChangeClass(stock.change_pct || 0);
+      const s = stock.scores;
+
+      return `
+        <div class="card" id="card-${idx}">
+          <div class="card-main" onclick="toggleDetail(${idx})">
+            <div class="card-info">
+              <div class="card-ticker">${stock.ticker}</div>
+              <div class="card-name">${stock.name}</div>
+              <div class="card-category">${stock.category}</div>
+            </div>
+            <div class="card-scores">
+              ${renderScoreBar('단기', s.short)}
+              ${renderScoreBar('중기', s.mid)}
+              ${renderScoreBar('장기', s.long)}
+              ${renderScoreBar('리스크', stock.risk_score)}
+            </div>
+            <div class="card-price">
+              <div class="price">${priceStr}</div>
+              <div class="change ${changeClass}">${changeStr}</div>
+            </div>
+          </div>
+          <div class="card-detail" id="detail-${idx}">
+            <p class="detail-desc">${stock.description || ''}</p>
+
+            <div class="detail-section">
+              <h4>📊 투자 점수</h4>
+              ${renderDetailScore('단기(1달)', s.short)}
+              ${renderDetailScore('중기(1년)', s.mid)}
+              ${renderDetailScore('장기(10년)', s.long)}
+              ${renderDetailScore('리스크', stock.risk_score)}
+            </div>
+
+            <div class="detail-section">
+              <h4>✅ 장점</h4>
+              <ul class="detail-list pros">
+                ${(stock.pros || []).map(p => `<li>${p}</li>`).join('')}
+              </ul>
+            </div>
+
+            <div class="detail-section">
+              <h4>⚠️ 단점</h4>
+              <ul class="detail-list cons">
+                ${(stock.cons || []).map(c => `<li>${c}</li>`).join('')}
+              </ul>
+            </div>
+
+            <div class="detail-section">
+              <h4>🔴 리스크 요인</h4>
+              <ul class="detail-list risk">
+                ${(stock.risk_factors || []).map(r => `<li>${r}</li>`).join('')}
+              </ul>
+            </div>
+
+            <div class="detail-meta">
+              <div>거래량: <span>${stock.volume ? stock.volume.toLocaleString() : 'N/A'}</span></div>
+              <div>시가총액: <span>${stock.market_cap || 'N/A'}</span></div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function toggleDetail(idx) {
+      const detail = document.getElementById(`detail-${idx}`);
+      detail.classList.toggle('open');
+    }
+
+    function sortStocks(stocks, sortKey) {
+      const sorted = [...stocks];
+      switch(sortKey) {
+        case 'long':
+          sorted.sort((a, b) => b.scores.long - a.scores.long);
+          break;
+        case 'short':
+          sorted.sort((a, b) => b.scores.short - a.scores.short);
+          break;
+        case 'risk':
+          sorted.sort((a, b) => b.risk_score - a.risk_score);
+          break;
+        case 'change':
+          sorted.sort((a, b) => (b.change_pct || 0) - (a.change_pct || 0));
+          break;
+        default:
+          break;
+      }
+      return sorted;
+    }
+
+    function renderCards() {
+      const filtered = allStocks.filter(s => s.market === currentMarket);
+      const sorted = sortStocks(filtered, currentSort);
+      const container = document.getElementById('cards');
+      container.innerHTML = sorted.map((s, i) => renderCard(s, i)).join('');
+    }
+
+    function renderInvestSummary() {
+      const el = document.getElementById('investSummary');
+      el.style.display = 'block';
+
+      const overseas = allStocks.filter(s => s.market === 'overseas');
+      const domestic = allStocks.filter(s => s.market === 'domestic');
+
+      const topLong = [...allStocks].sort((a, b) => b.scores.long - a.scores.long).slice(0, 3);
+      const topShort = [...allStocks].sort((a, b) => b.scores.short - a.scores.short).slice(0, 3);
+      const lowRisk = [...allStocks].sort((a, b) => b.risk_score - a.risk_score).slice(0, 3);
+
+      document.getElementById('investContent').innerHTML = `
+        <p><strong>장기 유망:</strong> ${topLong.map(s => s.name).join(', ')} - 장기 투자 점수가 가장 높은 종목들입니다.</p>
+        <p><strong>단기 모멘텀:</strong> ${topShort.map(s => s.name).join(', ')} - 단기적으로 상승 모멘텀이 기대되는 종목들입니다.</p>
+        <p><strong>안정성 우선:</strong> ${lowRisk.map(s => s.name).join(', ')} - 리스크 대비 안정적인 투자 대상입니다.</p>
+      `;
+    }
+
+    // Tab events
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentMarket = tab.dataset.market;
+        renderCards();
+      });
+    });
+
+    // Sort events
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSort = btn.dataset.sort;
+        renderCards();
+      });
+    });
+
+    // Load data
+    fetch('./data/stocks.json')
+      .then(r => {
+        if (!r.ok) throw new Error('데이터 로드 실패');
+        return r.json();
+      })
+      .then(data => {
+        allStocks = data;
+        document.getElementById('loading').style.display = 'none';
+
+        if (data.length > 0 && data[0].last_updated) {
+          document.getElementById('updateTime').textContent = `마지막 업데이트: ${data[0].last_updated}`;
+        }
+
+        renderSummary(data);
+        renderCards();
+        renderInvestSummary();
+      })
+      .catch(err => {
+        document.getElementById('loading').innerHTML = `
+          <div style="color:var(--red)">데이터를 불러올 수 없습니다</div>
+          <div style="margin-top:8px;font-size:0.8rem;color:var(--text-muted)">${err.message}</div>
+        `;
+      });
+  </script>
+</body>
+</html>
