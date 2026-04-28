@@ -27,11 +27,11 @@
       "AI 투자 사이클 둔화 가능성",
       "미중 기술 갈등 심화"
     ],
-    "price": 216.61,
-    "change_pct": 4.0,
-    "volume": 184868860,
-    "market_cap": "$5.26T",
-    "last_updated": "2026-04-28 08:40 KST"
+    "price": 213.17,
+    "change_pct": -1.59,
+    "volume": 179415428,
+    "market_cap": "$5.18T",
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "AVGO",
@@ -61,11 +61,11 @@
       "커스텀칩 수주 경쟁 심화",
       "부채 부담으로 재무 유연성 저하"
     ],
-    "price": 418.2,
-    "change_pct": -1.08,
-    "volume": 17397609,
-    "market_cap": "$1.98T",
-    "last_updated": "2026-04-28 08:40 KST"
+    "price": 399.83,
+    "change_pct": -4.39,
+    "volume": 25462353,
+    "market_cap": "$1.89T",
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "AMD",
@@ -95,11 +95,11 @@
       "AI GPU 경쟁에서 도태",
       "Intel의 반격"
     ],
-    "price": 334.63,
-    "change_pct": -3.79,
-    "volume": 50368260,
-    "market_cap": "$545.6B",
-    "last_updated": "2026-04-28 08:40 KST"
+    "price": 323.21,
+    "change_pct": -3.41,
+    "volume": 42029312,
+    "market_cap": "$527.0B",
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "MSFT",
@@ -129,11 +129,11 @@
       "클라우드 경쟁 심화 (AWS, GCP)",
       "AI 투자 대비 수익화 지연"
     ],
-    "price": 424.82,
-    "change_pct": 0.05,
-    "volume": 30769467,
-    "market_cap": "$3.16T",
-    "last_updated": "2026-04-28 08:40 KST"
+    "price": 429.25,
+    "change_pct": 1.04,
+    "volume": 30312242,
+    "market_cap": "$3.19T",
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "META",
@@ -163,11 +163,11 @@
       "규제 강화 (EU DMA 등)",
       "메타버스 ROI 불확실"
     ],
-    "price": 678.62,
-    "change_pct": 0.53,
-    "volume": 12763296,
-    "market_cap": "$1.72T",
-    "last_updated": "2026-04-28 08:40 KST"
+    "price": 671.34,
+    "change_pct": -1.07,
+    "volume": 10276663,
+    "market_cap": "$1.70T",
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "PLTR",
@@ -197,11 +197,11 @@
       "정부 예산 삭감 가능성",
       "상업 부문 성장 둔화 시 주가 급락"
     ],
-    "price": 143.1,
-    "change_pct": 0.01,
-    "volume": 31135928,
-    "market_cap": "$342.2B",
-    "last_updated": "2026-04-28 08:40 KST"
+    "price": 141.18,
+    "change_pct": -1.34,
+    "volume": 24542303,
+    "market_cap": "$338.4B",
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "TSM",
@@ -231,11 +231,11 @@
       "해외 생산 확대 시 수익성 저하",
       "Intel 파운드리 경쟁 부상"
     ],
-    "price": 404.98,
-    "change_pct": 0.63,
-    "volume": 16467526,
-    "market_cap": "$2.10T",
-    "last_updated": "2026-04-28 08:40 KST"
+    "price": 392.34,
+    "change_pct": -3.12,
+    "volume": 14529631,
+    "market_cap": "$2.03T",
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "MU",
@@ -265,11 +265,11 @@
       "HBM 기술 경쟁 열위",
       "중국 메모리 업체 부상"
     ],
-    "price": 524.56,
-    "change_pct": 5.6,
-    "volume": 38228158,
-    "market_cap": "$591.6B",
-    "last_updated": "2026-04-28 08:40 KST"
+    "price": 504.29,
+    "change_pct": -3.86,
+    "volume": 43805215,
+    "market_cap": "$568.7B",
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "000660",
@@ -299,11 +299,11 @@
       "AI 투자 사이클 둔화",
       "반도체 다운사이클 리스크"
     ],
-    "price": 1292000,
-    "change_pct": 5.73,
-    "volume": 4563073,
+    "price": 1300000,
+    "change_pct": 0.62,
+    "volume": 3002713,
     "market_cap": "N/A",
-    "last_updated": "2026-04-28 08:40 KST"
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "005930",
@@ -333,11 +333,11 @@
       "파운드리 경쟁력 약화",
       "중국 리스크"
     ],
-    "price": 224500,
-    "change_pct": 2.28,
-    "volume": 22870374,
+    "price": 222000,
+    "change_pct": -1.11,
+    "volume": 18444490,
     "market_cap": "N/A",
-    "last_updated": "2026-04-28 08:40 KST"
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "035420",
@@ -367,11 +367,11 @@
       "일본 정부의 LINE 경영권 압박",
       "국내 플랫폼 규제 강화"
     ],
-    "price": 215000,
-    "change_pct": 0.47,
-    "volume": 458738,
+    "price": 219500,
+    "change_pct": 2.09,
+    "volume": 758420,
     "market_cap": "N/A",
-    "last_updated": "2026-04-28 08:40 KST"
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "017670",
@@ -401,11 +401,11 @@
       "통신 요금 규제",
       "그룹사 리스크 전이"
     ],
-    "price": 98000,
-    "change_pct": -2.0,
-    "volume": 832809,
+    "price": 96800,
+    "change_pct": -1.22,
+    "volume": 618645,
     "market_cap": "N/A",
-    "last_updated": "2026-04-28 08:40 KST"
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "328130",
@@ -435,11 +435,11 @@
       "경쟁사 기술 추격",
       "의료 AI 규제 강화"
     ],
-    "price": 38200,
-    "change_pct": 4.8,
-    "volume": 274657,
+    "price": 38450,
+    "change_pct": 0.65,
+    "volume": 150681,
     "market_cap": "N/A",
-    "last_updated": "2026-04-28 08:40 KST"
+    "last_updated": "2026-04-29 08:42 KST"
   },
   {
     "ticker": "403870",
@@ -469,10 +469,10 @@
       "메모리 업체 설비투자 감소",
       "단일 제품 리스크"
     ],
-    "price": 54800,
-    "change_pct": 2.62,
-    "volume": 4303590,
+    "price": 53700,
+    "change_pct": -2.01,
+    "volume": 2575107,
     "market_cap": "N/A",
-    "last_updated": "2026-04-28 08:40 KST"
+    "last_updated": "2026-04-29 08:42 KST"
   }
 ]
